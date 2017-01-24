@@ -102,7 +102,8 @@
         if (options.catchall) {
             var oldHandler = window.onerror;
             var newHandler = function(msg, url, line, column, error) {
-                _rawLog({error: msg, line: line, column: column, location: url}).level('ERROR').send();
+                var stack = error ? error.stack : undefined;
+                _rawLog({error: msg, line: line, column: column, location: url, stack: stack}).level('ERROR').send();
                 if (oldHandler) {
                     return oldHandler(msg, url, line, column, error);
                 } else {
@@ -116,8 +117,8 @@
             var nav = window.navigator || {doNotTrack: undefined};
             var screen = window.screen || {};
             var location = window.location || {};
-            var search = location.search ? ('?' + location.search) : '';
-            var hash = location.hash ? ('#' + location.hash) : '';
+            var search = location.search;
+            var hash = location.hash;
 
             return {
               url: location.pathname + search + hash,
